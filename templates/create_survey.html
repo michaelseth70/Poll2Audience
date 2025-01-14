@@ -87,6 +87,15 @@
     const clearOptionsButton = document.getElementById('clear-options');
     const form = document.querySelector('form');
 
+    // Initially hide the "Clear All" button
+    clearOptionsButton.style.display = 'none';
+
+    // Function to update the visibility of the "Clear All" button
+    function updateClearButtonVisibility() {
+      const hasOptions = hiddenOptionsContainer.querySelectorAll('input').length > 0;
+      clearOptionsButton.style.display = hasOptions ? 'inline-flex' : 'none';
+    }
+
     // Add options dynamically
     addCustomOptionButton.addEventListener('click', () => {
       const optionText = customOptionInput.value.trim();
@@ -108,6 +117,8 @@
         if (placeholder) {
           placeholder.remove();
         }
+
+        updateClearButtonVisibility(); // Update "Clear All" visibility
       } else {
         alert("Please enter an option before adding.");
       }
@@ -117,6 +128,7 @@
     clearOptionsButton.addEventListener('click', () => {
       customOptionsList.innerHTML = '<span style="color: #aaa;">Choices you add will appear below. These are what your audience will select from.</span>';
       hiddenOptionsContainer.innerHTML = '';
+      updateClearButtonVisibility(); // Update "Clear All" visibility
     });
 
     // Validate on form submission
