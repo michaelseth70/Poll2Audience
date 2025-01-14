@@ -39,8 +39,8 @@
 
           <!-- Custom Options Section -->
           <div class="section">
-            <h6><strong>Add Choices for Your Audience</strong></h6>
-            <p style="margin-bottom: 20px;">List the choices you want to offer your audience. Start typing, and we’ll suggest similar options for you.</p>
+            <h6><strong>Add Choices for the Audience</strong></h6>
+            <p style="margin-bottom: 20px;">List the choices you want to offer your audience.</p>
             <div class="input-field custom-option-field" style="display: flex; align-items: center;">
               <input 
                 type="text" 
@@ -58,6 +58,11 @@
                  style="margin-top: 15px; padding: 10px; border: 1px dashed #ddd; border-radius: 5px; min-height: 50px; background-color: #f9f9f9;">
               <span style="color: #aaa;">Choices you add will appear below. These are what your audience will select from.</span>
             </div>
+
+            <!-- Clear All Button -->
+            <div style="margin-top: 10px; text-align: right;">
+              <button type="button" id="clear-options" class="btn red lighten-2">Clear All</button>
+            </div>
           </div>
 
           <!-- Separator -->
@@ -65,7 +70,7 @@
 
           <!-- Submit Button -->
           <div class="section" style="text-align: center;">
-            <button type="submit" class="btn green btn-large" style="border-radius: 25px; padding: 10px 40px;">Save and Share Survey</button>
+            <button type="submit" class="btn green btn-large" style="border-radius: 25px; padding: 12px 40px; line-height: 1.5;">Save and Share Survey</button>
           </div>
         </form>
       </div>
@@ -79,6 +84,7 @@
     const customOptionInput = document.getElementById('custom-option-input');
     const customOptionsList = document.getElementById('custom-options-list');
     const hiddenOptionsContainer = document.getElementById('hidden-options-container');
+    const clearOptionsButton = document.getElementById('clear-options');
     const form = document.querySelector('form');
 
     // Add options dynamically
@@ -107,12 +113,18 @@
       }
     });
 
+    // Clear all options
+    clearOptionsButton.addEventListener('click', () => {
+      customOptionsList.innerHTML = '<span style="color: #aaa;">Choices you add will appear below. These are what your audience will select from.</span>';
+      hiddenOptionsContainer.innerHTML = '';
+    });
+
     // Validate on form submission
     form.addEventListener('submit', (e) => {
       const optionsCount = hiddenOptionsContainer.querySelectorAll('input').length;
       if (optionsCount < 2) {
         e.preventDefault();
-        alert("You must define at least two choices to create a pulse.");
+        alert("You must define at least two choices to create a poll.");
       }
     });
   });
@@ -140,10 +152,26 @@
     background-color: #26a69a;
     font-weight: bold;
     transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    line-height: 1.5;
   }
 
   .btn.green.btn-large:hover {
     background-color: #1e8e84;
+  }
+
+  .btn.red.lighten-2 {
+    background-color: #ef5350;
+    color: white;
+    border-radius: 5px;
+    padding: 6px 12px;
+  }
+
+  .btn.red.lighten-2:hover {
+    background-color: #e53935;
   }
 
   #custom-options-container {
@@ -153,10 +181,6 @@
   .helper-text {
     color: #757575;
     font-size: 14px;
-  }
-
-  .card-title {
-    font-weight: 600;
   }
 
   h5, h6 {
