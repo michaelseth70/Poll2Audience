@@ -39,7 +39,7 @@
 
           <!-- Custom Options Section -->
           <div class="section">
-            <h6><strong>Add Choices for the Audience</strong></h6>
+            <h6><strong>Choices for the Audience</strong></h6>
             <p style="margin-bottom: 20px;">List the choices you want to offer your audience.</p>
             <div class="input-field custom-option-field" style="display: flex; align-items: center;">
               <input 
@@ -97,7 +97,7 @@
     }
 
     // Add options dynamically
-    addCustomOptionButton.addEventListener('click', () => {
+    function addOption() {
       const optionText = customOptionInput.value.trim();
       if (optionText) {
         const optionDiv = document.createElement('div');
@@ -121,6 +121,17 @@
         updateClearButtonVisibility(); // Update "Clear All" visibility
       } else {
         alert("Please enter an option before adding.");
+      }
+    }
+
+    // Add option on button click
+    addCustomOptionButton.addEventListener('click', addOption);
+
+    // Add option on Enter key press
+    customOptionInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Prevent form submission
+        addOption(); // Add option to the list
       }
     });
 
