@@ -70,7 +70,7 @@
 
           <!-- Submit Button -->
           <div class="section" style="text-align: center;">
-            <button type="submit" class="btn green btn-large" style="border-radius: 25px; padding: 12px 40px; line-height: 1.5;">Save and Share Survey</button>
+            <button type="submit" class="btn green btn-large" style="border-radius: 25px; padding: 12px 40px;">Save and Share Survey</button>
           </div>
         </form>
       </div>
@@ -150,7 +150,7 @@
 
   .btn.green.btn-large {
     background-color: #26a69a;
-    font-weight: bold;
+    font-weight: normal; /* Removed bold styling */
     transition: background-color 0.3s ease;
     display: inline-flex;
     align-items: center;
@@ -168,6 +168,9 @@
     color: white;
     border-radius: 5px;
     padding: 6px 12px;
+    display: inline-flex;
+    align-items: center; /* Vertical centering */
+    justify-content: center; /* Horizontal centering */
   }
 
   .btn.red.lighten-2:hover {
