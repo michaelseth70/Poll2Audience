@@ -1,0 +1,17 @@
+<h5>Response Monitoring</h5>
+<table class="highlight">
+    <thead>
+        <tr>
+            <th>Option</th>
+            <th>Responses</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for option in survey.options %}
+            <tr>
+                <td>{{ option.visible_text }}</td>
+                <td>{{ option.response_count }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
