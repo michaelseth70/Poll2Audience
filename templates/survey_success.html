@@ -10,82 +10,74 @@
             background-color: #f4f4f9;
             font-family: 'Roboto', sans-serif;
         }
+        .navbar {
+            background-color: #26a69a;
+        }
+        .navbar .brand-logo {
+            font-size: 24px;
+            font-weight: bold;
+            padding-left: 15px;
+        }
         .link-container {
-            display: flex;
-            flex-direction: column;
             margin-top: 20px;
+            text-align: center;
         }
         .link-container input {
+            display: block;
+            margin: 0 auto;
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            margin-bottom: 10px;
+            width: 80%;
+            max-width: 600px;
         }
-        .btn {
+        .btn.green {
             border-radius: 25px;
             padding: 10px 20px;
+            margin: 10px 5px;
             transition: background-color 0.3s ease;
         }
-        .btn.teal {
-            background-color: #26a69a;
-            color: white;
-        }
-        .btn.teal:hover {
+        .btn.green:hover {
             background-color: #1e8e84;
         }
-        .btn.text-button {
-            background-color: transparent;
-            color: #26a69a;
-            font-size: 16px;
-            padding: 0;
-            margin-right: 10px;
-            text-decoration: underline;
-            cursor: pointer;
+        h5 {
+            margin-bottom: 20px;
+            text-align: center;
         }
-        .btn.text-button:hover {
-            color: #1e8e84;
-        }
-        .text-actions {
-            display: flex;
-            align-items: center;
+        .card {
+            margin-top: 30px;
+            padding: 20px;
         }
     </style>
 </head>
 <body>
+    <!-- Header Bar -->
+    <nav class="navbar">
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo">Poll2Audience</a>
+        </div>
+    </nav>
+
     <div class="container">
         <div class="row">
-            <!-- Survey Title Section -->
+            <!-- Survey Success Card -->
             <div class="col s12 m8 offset-m2">
-                <div class="card teal lighten-5" style="margin-top: 30px; padding: 20px;">
+                <div class="card">
                     <h4 class="card-title" style="text-align: center;">Your Survey is Ready!</h4>
                     <p style="font-size: 16px; color: #555; text-align: center;">
                         Share your survey link and monitor responses effortlessly.
                     </p>
-                </div>
-            </div>
-
-            <!-- Survey Link Section -->
-            <div class="col s12 m8 offset-m2">
-                <div class="card">
-                    <div class="card-content">
-                        <h5 style="margin-bottom: 20px; text-align: center;">Survey Link</h5>
-                        <div class="link-container">
-                            <input type="text" id="survey-link" value="{{ survey_link }}" readonly>
-                            <div class="text-actions">
-                                <button id="copy-survey-btn" class="btn text-button">Copy</button>
-                                <a href="{{ survey_link }}" target="_blank" class="btn text-button">Preview</a>
-                            </div>
+                    <h5>Survey Link</h5>
+                    <div class="link-container">
+                        <input type="text" id="survey-link" value="{{ survey_link }}" readonly>
+                        <div>
+                            <button id="copy-survey-btn" class="btn green">Copy Link</button>
+                            <a href="{{ survey_link }}" target="_blank" class="btn green">Preview Survey</a>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Monitor Responses Section -->
-            <div class="col s12 m8 offset-m2">
-                <div class="card">
-                    <div class="card-content" style="text-align: center;">
-                        <h5 style="margin-bottom: 20px;">Monitor Responses</h5>
+                    <h5 style="margin-top: 30px;">Monitor Responses</h5>
+                    <div class="link-container">
                         <a href="{{ monitor_link }}" class="btn teal btn-large">Monitor Responses</a>
                     </div>
                 </div>
@@ -102,7 +94,7 @@
             document.execCommand('copy');
             this.textContent = 'Copied!';
             setTimeout(() => {
-                this.textContent = 'Copy';
+                this.textContent = 'Copy Link';
             }, 2000);
         });
     </script>
