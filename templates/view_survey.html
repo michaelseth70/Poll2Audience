@@ -2,21 +2,48 @@
 
 {% block content %}
 <div class="row">
+    <!-- Survey Title Section -->
+    <div class="col s12 m8 offset-m2">
+        <div class="card teal lighten-5" style="margin-bottom: 30px; padding: 20px;">
+            <h4 class="card-title" style="margin-bottom: 10px; text-align: center;">{{ survey.title }}</h4>
+            <p style="font-size: 16px; color: #555; text-align: center;">
+                {{ survey.description if survey.description else "Here's a quick poll for you. Please choose one of the options below." }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Survey Options Section -->
     <div class="col s12 m8 offset-m2">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">{{ survey.title }}</span>
-                <p>{{ survey.description }}</p>
-				<ul>
-					{% for option in survey.options %}
-						<li>
-							<a href="{{ option.hyperlink }}" target="_blank">{{ option.visible_text }}</a>
-						</li>
-					{% endfor %}
-				</ul>
-
+                <h5 style="margin-bottom: 20px; text-align: center;">Make Your Choice</h5>
+                <ul style="list-style-type: none; padding: 0;">
+                    {% for option in survey.options %}
+                        <li style="margin-bottom: 15px; text-align: center;">
+                            <a href="{{ option.hyperlink }}" target="_blank" 
+                               style="
+                                   display: inline-block;
+                                   padding: 10px 20px;
+                                   border-radius: 25px;
+                                   background-color: #26a69a;
+                                   color: white;
+                                   text-decoration: none;
+                                   font-size: 16px;
+                                   font-weight: bold;
+                                   transition: background-color 0.3s ease;">
+                                {{ option.visible_text }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    a:hover {
+        background-color: #1e8e84;
+    }
+</style>
 {% endblock %}
