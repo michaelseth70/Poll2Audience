@@ -12,20 +12,19 @@
         }
         .link-container {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             margin-top: 20px;
         }
         .link-container input {
-            flex: 1;
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            margin-right: 10px;
+            margin-bottom: 10px;
         }
         .btn {
             border-radius: 25px;
-            padding: 8px 16px;
+            padding: 10px 20px;
             transition: background-color 0.3s ease;
         }
         .btn.teal {
@@ -40,12 +39,16 @@
             color: #26a69a;
             font-size: 16px;
             padding: 0;
-            margin-left: 10px;
+            margin-right: 10px;
             text-decoration: underline;
             cursor: pointer;
         }
         .btn.text-button:hover {
             color: #1e8e84;
+        }
+        .text-actions {
+            display: flex;
+            align-items: center;
         }
     </style>
 </head>
@@ -69,8 +72,10 @@
                         <h5 style="margin-bottom: 20px; text-align: center;">Survey Link</h5>
                         <div class="link-container">
                             <input type="text" id="survey-link" value="{{ survey_link }}" readonly>
-                            <button id="copy-survey-btn" class="btn text-button">Copy</button>
-                            <a href="{{ survey_link }}" target="_blank" class="btn text-button">Preview</a>
+                            <div class="text-actions">
+                                <button id="copy-survey-btn" class="btn text-button">Copy</button>
+                                <a href="{{ survey_link }}" target="_blank" class="btn text-button">Preview</a>
+                            </div>
                         </div>
                     </div>
                 </div>
