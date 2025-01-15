@@ -84,11 +84,28 @@ def view_survey(survey_id):
 
 @app.route('/respond/<survey_id>/<int:option_id>', methods=['POST'])
 def respond(survey_id, option_id):
-    option = Option.query.filter_by(survey_id=survey_id, id=option_id).first()
+    if 'voted' not in session:
+        session['voted'] = {}
+
+    # Check if the user has already voted for this survey
+    previous_vote = session['voted'].get(survey_id)
+    if previous_vote:
+        if previous_vote == option_id:
+            return jsonify({"error": "already_voted"}), 400
+
+        # Transfer the vote
+        previous_option = Option.query.filter_by(id=previous_vote, survey_id=survey_id).first()
+        if previous_option:
+            previous_option.response_count -= 1
+            db.session.commit()
+
+    # Register the new vote
+    option = Option.query.filter_by(id=option_id, survey_id=survey_id).first()
     if not option:
         return jsonify({"error": "Invalid option"}), 404
 
     option.response_count += 1
+    session['voted'][survey_id] = option_id
     db.session.commit()
 
     return jsonify({"new_count": option.response_count}), 200
