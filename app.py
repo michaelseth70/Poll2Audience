@@ -97,16 +97,18 @@ def respond(survey_id, option_id):
     if 'voted_surveys' not in session:
         session['voted_surveys'] = {}
 
-    # Check if the user has already voted
+    # Get the previously voted option (if any) for this survey
     previous_option_id = session['voted_surveys'].get(survey_id)
+
+    # Check if the user already voted for the same option
+    if previous_option_id == option_id:
+        return jsonify({'error': 'already_voted'}), 400
+
+    # Handle vote transfer if the user switches their choice
     if previous_option_id:
-        if previous_option_id == option_id:
-            return jsonify({'error': 'already_voted'}), 400  # Already voted for this option
-        else:
-            # Transfer vote from previous option to the new one
-            previous_option = Option.query.get(previous_option_id)
-            if previous_option:
-                previous_option.response_count -= 1
+        previous_option = Option.query.get(previous_option_id)
+        if previous_option:
+            previous_option.response_count -= 1
 
     # Register the new vote
     option = Option.query.get(option_id)
@@ -114,7 +116,7 @@ def respond(survey_id, option_id):
         return jsonify({'error': 'Invalid option'}), 400
 
     option.response_count += 1
-    session['voted_surveys'][survey_id] = option_id  # Store the new vote in the session
+    session['voted_surveys'][survey_id] = option_id  # Update the session with the new vote
     db.session.commit()
 
     return jsonify({'new_count': option.response_count})
