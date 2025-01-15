@@ -40,41 +40,38 @@ def home():
 
 @app.route('/create', methods=['GET', 'POST'])
 def create_survey():
-    # Fetch autocomplete suggestions from the database
     suggestions = OptionSuggestion.query.with_entities(OptionSuggestion.text).all()
 
     if request.method == 'POST':
         title = request.form.get('title')
         custom_options = request.form.getlist('option_text')
 
-        # Validate title
         if not title:
             flash("Survey title is required.", "danger")
             return redirect(url_for('create_survey'))
 
-        # Validate options
         options = [opt.strip() for opt in custom_options if opt.strip()]
         if len(options) < 2:
             flash("You must define at least two options for your pulse.", "danger")
             return redirect(url_for('create_survey'))
 
-        # Save survey and options
         survey = Survey(title=title)
         db.session.add(survey)
         db.session.flush()
 
-        for index, text in enumerate(options, start=1):
-            hyperlink = url_for('respond', survey_id=survey.id, option_id=index, _external=True)
-            option = Option(survey_id=survey.id, visible_text=text, hyperlink=hyperlink)
+        for text in options:
+            option = Option(survey_id=survey.id, visible_text=text, hyperlink="")
             db.session.add(option)
+            db.session.flush()
 
-            # Save option text as a suggestion if not already present
+            option.hyperlink = url_for('respond', survey_id=survey.id, option_id=option.id, _external=True)
+            db.session.commit()
+
             if not OptionSuggestion.query.filter_by(text=text).first():
                 db.session.add(OptionSuggestion(text=text))
 
         db.session.commit()
 
-        # Redirect to the survey success page
         return redirect(url_for('survey_success', survey_id=survey.id))
 
     return render_template('create_survey.html', autocomplete_suggestions=[s[0] for s in suggestions])
