@@ -35,22 +35,42 @@
             text-align: center;
             color: #00796b;
         }
-        .link-section {
-            margin: 20px 0;
+        .action-buttons {
+            text-align: center;
+            margin-top: 20px;
         }
-        .link-section h5 {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
+        .action-buttons a,
+        .action-buttons button {
+            margin: 10px;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        .action-buttons a.preview-btn {
+            background-color: #26a69a;
+            color: white;
+        }
+        .action-buttons a.preview-btn:hover {
+            background-color: #1e8e84;
+        }
+        .action-buttons a.monitor-btn {
+            background-color: #4cb050;
+            color: white;
+        }
+        .action-buttons a.monitor-btn:hover {
+            background-color: #3a8a3f;
         }
         .link-container {
             display: flex;
-            align-items: center;
-            margin-top: 10px;
+            justify-content: center;
+            margin-top: 20px;
         }
         .link-container input {
             flex: 1;
+            max-width: 500px;
             padding: 12px 15px;
             border: 1px solid #ddd;
             border-radius: 5px 0 0 5px;
@@ -60,7 +80,7 @@
         .link-container button {
             padding: 12px 20px;
             font-size: 16px;
-            background-color: #26a69a;
+            background-color: #757575;
             color: white;
             border: none;
             border-radius: 0 5px 5px 0;
@@ -68,33 +88,7 @@
             transition: background-color 0.3s ease;
         }
         .link-container button:hover {
-            background-color: #1e8e84;
-        }
-        .actions {
-            text-align: center;
-            margin-top: 30px;
-        }
-        .actions a {
-            margin: 10px;
-            padding: 12px 25px;
-            font-size: 16px;
-            border-radius: 25px;
-            text-decoration: none;
-            color: white;
-            display: inline-block;
-            transition: background-color 0.3s ease;
-        }
-        .actions .preview-btn {
-            background-color: #26a69a;
-        }
-        .actions .preview-btn:hover {
-            background-color: #1e8e84;
-        }
-        .actions .monitor-btn {
-            background-color: #00796b;
-        }
-        .actions .monitor-btn:hover {
-            background-color: #005b50;
+            background-color: #616161;
         }
     </style>
 </head>
@@ -116,28 +110,22 @@
                         Share your survey and monitor responses effortlessly.
                     </p>
 
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <a href="{{ survey_link }}" target="_blank" class="preview-btn">Preview Survey</a>
+                        <a href="{{ monitor_link }}" class="monitor-btn">Monitor Responses</a>
+                    </div>
+
                     <!-- Survey Link Section -->
-                    <div class="link-section">
-                        <h5>Survey Link</h5>
-                        <div class="link-container">
-                            <input type="text" id="survey-link" value="{{ survey_link }}" readonly>
-                            <button id="copy-survey-btn">Copy</button>
-                        </div>
+                    <div class="link-container">
+                        <input type="text" id="survey-link" value="{{ survey_link }}" readonly>
+                        <button id="copy-survey-btn">Copy Link</button>
                     </div>
 
                     <!-- Monitor Link Section -->
-                    <div class="link-section">
-                        <h5>Monitoring Link</h5>
-                        <div class="link-container">
-                            <input type="text" id="monitor-link" value="{{ monitor_link }}" readonly>
-                            <button id="copy-monitor-btn">Copy</button>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="actions">
-                        <a href="{{ survey_link }}" target="_blank" class="preview-btn">Preview</a>
-                        <a href="{{ monitor_link }}" class="monitor-btn">Monitor Responses</a>
+                    <div class="link-container">
+                        <input type="text" id="monitor-link" value="{{ monitor_link }}" readonly>
+                        <button id="copy-monitor-btn">Copy Link</button>
                     </div>
                 </div>
             </div>
@@ -153,7 +141,7 @@
             document.execCommand('copy');
             this.textContent = 'Copied!';
             setTimeout(() => {
-                this.textContent = 'Copy';
+                this.textContent = 'Copy Link';
             }, 2000);
         });
 
@@ -165,7 +153,7 @@
             document.execCommand('copy');
             this.textContent = 'Copied!';
             setTimeout(() => {
-                this.textContent = 'Copy';
+                this.textContent = 'Copy Link';
             }, 2000);
         });
     </script>
