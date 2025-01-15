@@ -33,6 +33,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const choiceButtons = document.querySelectorAll('.choice-button');
+        let previouslySelectedButton = null; // Track the previously selected button
 
         choiceButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -48,7 +49,6 @@
                     if (response.ok) {
                         return response.json();
                     } else {
-                        // Handle errors gracefully
                         return response.json().then(err => {
                             throw err;
                         });
@@ -56,9 +56,16 @@
                 })
                 .then(data => {
                     if (data.new_count !== undefined) {
-                        // Update the specific button's count in real-time
-                        const countElement = button.querySelector('.choice-count');
-                        countElement.textContent = data.new_count;
+                        // Update the count of the newly selected button
+                        const newCountElement = button.querySelector('.choice-count');
+                        newCountElement.textContent = data.new_count;
+
+                        // If a previous button was selected, decrement its count
+                        if (previouslySelectedButton && previouslySelectedButton !== button) {
+                            const previousOptionId = previouslySelectedButton.getAttribute('data-option-id');
+                            const previousCountElement = previouslySelectedButton.querySelector('.choice-count');
+                            previousCountElement.textContent = parseInt(previousCountElement.textContent, 10) - 1;
+                        }
 
                         // Update styles to highlight the selected button
                         choiceButtons.forEach(btn => {
@@ -68,6 +75,9 @@
                                 btn.style.backgroundColor = "#26a69a"; // Reset others
                             }
                         });
+
+                        // Update the tracked button
+                        previouslySelectedButton = button;
                     }
                 })
                 .catch(error => {
