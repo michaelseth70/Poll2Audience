@@ -30,6 +30,49 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const choiceButtons = document.querySelectorAll('.choice-button');
+
+        choiceButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const optionId = button.getAttribute('data-option-id');
+
+                fetch(`/respond/{{ survey.id }}/${optionId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        return response.json().then(err => { throw err });
+                    }
+                })
+                .then(data => {
+                    // Update the vote count in real-time
+                    document.querySelectorAll('.choice-button').forEach(btn => {
+                        const countElement = btn.querySelector('.choice-count');
+                        countElement.textContent = btn.getAttribute('data-option-id') == optionId
+                            ? data.new_count
+                            : countElement.textContent;
+                    });
+                })
+                .catch(error => {
+                    if (error.error === 'already_voted') {
+                        alert("You have already voted.");
+                    } else {
+                        console.error('Error:', error);
+                        alert("An error occurred while submitting your vote.");
+                    }
+                });
+            });
+        });
+    });
+</script>
+
 <style>
     body {
         background-color: #f4f4f9;
@@ -75,38 +118,4 @@
         font-size: 14px;
     }
 </style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const choiceButtons = document.querySelectorAll('.choice-button');
-
-        choiceButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const optionId = button.getAttribute('data-option-id');
-
-                fetch(`/respond/{{ survey.id }}/${optionId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Failed to submit the vote.');
-                    }
-                })
-                .then(data => {
-                    // Update the vote count in real time
-                    const countElement = document.getElementById(`count-${optionId}`);
-                    countElement.textContent = data.new_count;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            });
-        });
-    });
-</script>
 {% endblock %}
