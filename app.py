@@ -1,6 +1,6 @@
 import os
 import uuid
-from flask import Flask, request, render_template, redirect, url_for, flash
+from flask import Flask, request, render_template, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -47,7 +47,7 @@ def create_survey():
         custom_options = request.form.getlist('option_text')
 
         if not title:
-            flash("Survey title is required.", "danger")
+            flash("Survey question is required.", "danger")
             return redirect(url_for('create_survey'))
 
         options = [opt.strip() for opt in custom_options if opt.strip()]
@@ -72,37 +72,26 @@ def create_survey():
 
         db.session.commit()
 
-        return redirect(url_for('survey_success', survey_id=survey.id))
+        # Redirect directly to the survey view page
+        return redirect(url_for('view_survey', survey_id=survey.id))
 
     return render_template('create_survey.html', autocomplete_suggestions=[s[0] for s in suggestions])
-
-@app.route('/survey/success/<survey_id>', methods=['GET'])
-def survey_success(survey_id):
-    survey = Survey.query.get_or_404(survey_id)
-    survey_link = url_for('view_survey', survey_id=survey.id, _external=True)
-    monitor_link = url_for('monitor_responses', survey_id=survey.id, _external=True)
-    return render_template('survey_success.html', survey=survey, survey_link=survey_link, monitor_link=monitor_link)
 
 @app.route('/survey/<survey_id>', methods=['GET'])
 def view_survey(survey_id):
     survey = Survey.query.get_or_404(survey_id)
     return render_template('view_survey.html', survey=survey)
 
-@app.route('/respond/<survey_id>/<int:option_id>', methods=['GET'])
+@app.route('/respond/<survey_id>/<int:option_id>', methods=['POST'])
 def respond(survey_id, option_id):
     option = Option.query.filter_by(survey_id=survey_id, id=option_id).first()
     if not option:
-        return "Invalid link", 404
+        return jsonify({"error": "Invalid option"}), 404
 
     option.response_count += 1
     db.session.commit()
 
-    return render_template('thank_you.html', message="Thank you for your response!")
-
-@app.route('/monitor/<survey_id>', methods=['GET'])
-def monitor_responses(survey_id):
-    survey = Survey.query.get_or_404(survey_id)
-    return render_template('monitor_responses.html', survey=survey)
+    return jsonify({"new_count": option.response_count}), 200
 
 # ============================
 # Initialize Database

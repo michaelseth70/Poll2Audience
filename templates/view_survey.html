@@ -1,49 +1,106 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div class="row">
-    <!-- Survey Title Section -->
-    <div class="col s12 m8 offset-m2">
-        <div class="card teal lighten-5" style="margin-bottom: 30px; padding: 20px;">
-            <h4 class="card-title" style="margin-bottom: 10px; text-align: center;">{{ survey.title }}</h4>
-            <p style="font-size: 16px; color: #555; text-align: center;">
-                {{ survey.description if survey.description else "Here's a quick poll for you. Please choose one of the options below." }}
-            </p>
-        </div>
-    </div>
-
-    <!-- Survey Options Section -->
-    <div class="col s12 m8 offset-m2">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ survey.title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        body {
+            background-color: #f4f4f9;
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+        .card-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #00796b;
+        }
+        .choice-button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #26a69a;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        .choice-button:hover {
+            background-color: #1e8e84;
+        }
+        .choice-count {
+            background-color: #00796b;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
         <div class="card">
-            <div class="card-content">
-                <h5 style="margin-bottom: 20px; text-align: center;">Make Your Choice</h5>
-                <ul style="list-style-type: none; padding: 0;">
-                    {% for option in survey.options %}
-                        <li style="margin-bottom: 15px; text-align: center;">
-                            <a href="{{ option.hyperlink }}" target="_blank" 
-                               style="
-                                   display: inline-block;
-                                   padding: 10px 20px;
-                                   border-radius: 25px;
-                                   background-color: #26a69a;
-                                   color: white;
-                                   text-decoration: none;
-                                   font-size: 16px;
-                                   font-weight: bold;
-                                   transition: background-color 0.3s ease;">
-                                {{ option.visible_text }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
+            <h4 class="card-title">{{ survey.title }}</h4>
+            <div id="choices-container">
+                {% for option in survey.options %}
+                <button class="choice-button" data-option-id="{{ option.id }}">
+                    <span>{{ option.visible_text }}</span>
+                    <span class="choice-count" id="count-{{ option.id }}">{{ option.response_count }}</span>
+                </button>
+                {% endfor %}
             </div>
         </div>
     </div>
-</div>
 
-<style>
-    a:hover {
-        background-color: #1e8e84;
-    }
-</style>
-{% endblock %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const choiceButtons = document.querySelectorAll('.choice-button');
+
+            choiceButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const optionId = button.getAttribute('data-option-id');
+
+                    fetch(`/respond/{{ survey.id }}/${optionId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Failed to submit the vote.');
+                        }
+                    })
+                    .then(data => {
+                        // Update the vote count in real time
+                        const countElement = document.getElementById(`count-${optionId}`);
+                        countElement.textContent = data.new_count;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
