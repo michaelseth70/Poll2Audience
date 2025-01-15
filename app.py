@@ -1,6 +1,6 @@
 import os
 import uuid
-from flask import Flask, request, render_template, redirect, url_for, flash, jsonify
+from flask import Flask, request, render_template, redirect, url_for, flash, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -20,12 +20,14 @@ class Survey(db.Model):
     title = db.Column(db.String, nullable=False)
     options = db.relationship('Option', backref='survey', lazy=True)
 
+
 class Option(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     survey_id = db.Column(db.String, db.ForeignKey('survey.id'), nullable=False)
     visible_text = db.Column(db.String, nullable=False)
     hyperlink = db.Column(db.String, nullable=False)
     response_count = db.Column(db.Integer, default=0)
+
 
 class OptionSuggestion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -37,6 +39,7 @@ class OptionSuggestion(db.Model):
 @app.route('/')
 def home():
     return redirect(url_for('create_survey'))
+
 
 @app.route('/create', methods=['GET', 'POST'])
 def create_survey():
@@ -77,10 +80,12 @@ def create_survey():
 
     return render_template('create_survey.html', autocomplete_suggestions=[s[0] for s in suggestions])
 
+
 @app.route('/survey/<survey_id>', methods=['GET'])
 def view_survey(survey_id):
     survey = Survey.query.get_or_404(survey_id)
     return render_template('view_survey.html', survey=survey)
+
 
 @app.route('/respond/<survey_id>/<option_id>', methods=['POST'])
 def respond(survey_id, option_id):
