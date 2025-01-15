@@ -82,33 +82,37 @@ def view_survey(survey_id):
     survey = Survey.query.get_or_404(survey_id)
     return render_template('view_survey.html', survey=survey)
 
-@app.route('/respond/<survey_id>/<int:option_id>', methods=['POST'])
+@app.route('/respond/<survey_id>/<option_id>', methods=['POST'])
 def respond(survey_id, option_id):
-    if 'voted' not in session:
-        session['voted'] = {}
+    survey = Survey.query.get(survey_id)
+    if not survey:
+        return jsonify({'error': 'Survey not found'}), 404
 
-    # Check if the user has already voted for this survey
-    previous_vote = session['voted'].get(survey_id)
-    if previous_vote:
-        if previous_vote == option_id:
-            return jsonify({"error": "already_voted"}), 400
+    # Initialize the session data for this survey if it doesn't exist
+    if 'voted_surveys' not in session:
+        session['voted_surveys'] = {}
 
-        # Transfer the vote
-        previous_option = Option.query.filter_by(id=previous_vote, survey_id=survey_id).first()
-        if previous_option:
-            previous_option.response_count -= 1
-            db.session.commit()
+    # Check if the user has already voted
+    previous_option_id = session['voted_surveys'].get(survey_id)
+    if previous_option_id:
+        if previous_option_id == option_id:
+            return jsonify({'error': 'already_voted'}), 400  # Already voted for this option
+        else:
+            # Transfer vote from previous option to the new one
+            previous_option = Option.query.get(previous_option_id)
+            if previous_option:
+                previous_option.response_count -= 1
 
     # Register the new vote
-    option = Option.query.filter_by(id=option_id, survey_id=survey_id).first()
-    if not option:
-        return jsonify({"error": "Invalid option"}), 404
+    option = Option.query.get(option_id)
+    if not option or option.survey_id != survey_id:
+        return jsonify({'error': 'Invalid option'}), 400
 
     option.response_count += 1
-    session['voted'][survey_id] = option_id
+    session['voted_surveys'][survey_id] = option_id  # Store the new vote in the session
     db.session.commit()
 
-    return jsonify({"new_count": option.response_count}), 200
+    return jsonify({'new_count': option.response_count})
 
 # ============================
 # Initialize Database
