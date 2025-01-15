@@ -32,45 +32,45 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             padding: 20px;
-            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        a:hover {
+            background-color: #1e8e84;
+        }
+        .btn {
+            border-radius: 25px;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease;
+        }
+        .btn.teal {
+            background-color: #26a69a;
+        }
+        .btn.teal:hover {
+            background-color: #1e8e84;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="row">
-            <!-- Survey Created Card -->
+            <!-- Survey Title Section -->
             <div class="col s12 m8 offset-m2">
                 <div class="card teal lighten-5" style="margin-top: 30px; padding: 20px;">
                     <h4 class="card-title" style="text-align: center;">Your Survey is Ready!</h4>
                     <p style="font-size: 16px; color: #555; text-align: center;">
-                        Share your survey link, preview how it looks, or monitor the results.
+                        Share your survey or monitor its progress.
                     </p>
                 </div>
             </div>
 
-            <!-- Share Survey Link Section -->
-            <div class="col s12 m8 offset-m2">
-                <div class="card">
-                    <div class="card-content">
-                        <h5 style="margin-bottom: 20px; text-align: center;">Share Your Survey</h5>
-                        <div class="survey-link-container">
-                            <input type="text" id="survey-link" value="{{ survey_link }}" readonly 
-                                   style="flex: 1; padding: 10px; font-size: 16px; border: 1px solid #ddd; border-radius: 5px;">
-                            <button id="copy-btn" class="copy-btn">Copy</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Preview Survey Section -->
+            <!-- Survey Preview Section -->
             <div class="col s12 m8 offset-m2">
                 <div class="card">
                     <div class="card-content">
                         <h5 style="margin-bottom: 20px; text-align: center;">Survey Preview</h5>
                         <div class="survey-preview">
                             <h6 style="color: #333; margin-bottom: 15px;">{{ survey.title }}</h6>
-                            <ul style="list-style: none; padding: 0;">
+                            <ul style="list-style: none; padding: 0; margin: 0;">
                                 {% for option in survey.options %}
                                 <li style="margin-bottom: 10px;">
                                     <a href="#" 
@@ -92,14 +92,26 @@
                 </div>
             </div>
 
+            <!-- Share Survey Link Section -->
+            <div class="col s12 m8 offset-m2">
+                <div class="card">
+                    <div class="card-content">
+                        <h5 style="margin-bottom: 20px; text-align: center;">Share Your Survey</h5>
+                        <div class="survey-link-container">
+                            <input type="text" id="survey-link" value="{{ survey_link }}" readonly 
+                                   style="flex: 1; padding: 10px; font-size: 16px; border: 1px solid #ddd; border-radius: 5px;">
+                            <button id="copy-btn" class="copy-btn">Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Monitor Results Section -->
             <div class="col s12 m8 offset-m2">
                 <div class="card">
                     <div class="card-content" style="text-align: center;">
                         <h5 style="margin-bottom: 20px;">Monitor Your Results</h5>
-                        <a href="{{ monitor_link }}" class="btn teal btn-large" style="border-radius: 25px; padding: 10px 40px;">
-                            Monitor Responses
-                        </a>
+                        <a href="{{ monitor_link }}" class="btn teal btn-large">Monitor Responses</a>
                     </div>
                 </div>
             </div>
