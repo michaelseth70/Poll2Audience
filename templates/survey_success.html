@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Survey Created</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         body {
             background-color: #f4f4f9;
@@ -24,25 +23,28 @@
             border-radius: 5px;
             margin-right: 10px;
         }
-        .icon-btn {
+        .btn {
+            border-radius: 25px;
+            padding: 8px 16px;
+            transition: background-color 0.3s ease;
+        }
+        .btn.teal {
+            background-color: #26a69a;
+            color: white;
+        }
+        .btn.teal:hover {
+            background-color: #1e8e84;
+        }
+        .btn.text-button {
             background-color: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 6px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background-color 0.2s ease;
-        }
-        .icon-btn:hover {
-            background-color: #e0f2f1;
-        }
-        .icon-btn i {
-            font-size: 24px;
             color: #26a69a;
+            font-size: 16px;
+            padding: 0;
+            margin-left: 10px;
+            text-decoration: underline;
+            cursor: pointer;
         }
-        .icon-btn:hover i {
+        .btn.text-button:hover {
             color: #1e8e84;
         }
     </style>
@@ -67,31 +69,19 @@
                         <h5 style="margin-bottom: 20px; text-align: center;">Survey Link</h5>
                         <div class="link-container">
                             <input type="text" id="survey-link" value="{{ survey_link }}" readonly>
-                            <button id="copy-survey-btn" class="icon-btn" title="Copy Link">
-                                <i class="material-icons">content_copy</i>
-                            </button>
-                            <a href="{{ survey_link }}" target="_blank" class="icon-btn" title="Preview Survey">
-                                <i class="material-icons">visibility</i>
-                            </a>
+                            <button id="copy-survey-btn" class="btn text-button">Copy</button>
+                            <a href="{{ survey_link }}" target="_blank" class="btn text-button">Preview</a>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Monitor Results Section -->
+            <!-- Monitor Responses Section -->
             <div class="col s12 m8 offset-m2">
                 <div class="card">
-                    <div class="card-content">
-                        <h5 style="margin-bottom: 20px; text-align: center;">Monitor Responses</h5>
-                        <div class="link-container">
-                            <input type="text" id="monitor-link" value="{{ monitor_link }}" readonly>
-                            <button id="copy-monitor-btn" class="icon-btn" title="Copy Link">
-                                <i class="material-icons">content_copy</i>
-                            </button>
-                            <a href="{{ monitor_link }}" target="_blank" class="icon-btn" title="Preview Responses">
-                                <i class="material-icons">visibility</i>
-                            </a>
-                        </div>
+                    <div class="card-content" style="text-align: center;">
+                        <h5 style="margin-bottom: 20px;">Monitor Responses</h5>
+                        <a href="{{ monitor_link }}" class="btn teal btn-large">Monitor Responses</a>
                     </div>
                 </div>
             </div>
@@ -105,16 +95,10 @@
             surveyLink.select();
             surveyLink.setSelectionRange(0, 99999); // For mobile devices
             document.execCommand('copy');
-            M.toast({ html: 'Survey link copied!' });
-        });
-
-        // Copy monitor link to clipboard
-        document.getElementById('copy-monitor-btn').addEventListener('click', function () {
-            const monitorLink = document.getElementById('monitor-link');
-            monitorLink.select();
-            monitorLink.setSelectionRange(0, 99999); // For mobile devices
-            document.execCommand('copy');
-            M.toast({ html: 'Monitor link copied!' });
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = 'Copy';
+            }, 2000);
         });
     </script>
 </body>
