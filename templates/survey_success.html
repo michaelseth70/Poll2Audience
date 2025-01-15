@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Created</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        body {
+            background-color: #f4f4f9;
+            font-family: 'Roboto', sans-serif;
+        }
+        .copy-btn {
+            background-color: #26a69a;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .copy-btn:hover {
+            background-color: #1e8e84;
+        }
+        .survey-link-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .survey-preview {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <!-- Survey Created Card -->
+            <div class="col s12 m8 offset-m2">
+                <div class="card teal lighten-5" style="margin-top: 30px; padding: 20px;">
+                    <h4 class="card-title" style="text-align: center;">Your Survey is Ready!</h4>
+                    <p style="font-size: 16px; color: #555; text-align: center;">
+                        Share your survey link, preview how it looks, or monitor the results.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Share Survey Link Section -->
+            <div class="col s12 m8 offset-m2">
+                <div class="card">
+                    <div class="card-content">
+                        <h5 style="margin-bottom: 20px; text-align: center;">Share Your Survey</h5>
+                        <div class="survey-link-container">
+                            <input type="text" id="survey-link" value="{{ survey_link }}" readonly 
+                                   style="flex: 1; padding: 10px; font-size: 16px; border: 1px solid #ddd; border-radius: 5px;">
+                            <button id="copy-btn" class="copy-btn">Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Survey Section -->
+            <div class="col s12 m8 offset-m2">
+                <div class="card">
+                    <div class="card-content">
+                        <h5 style="margin-bottom: 20px; text-align: center;">Survey Preview</h5>
+                        <div class="survey-preview">
+                            <h6 style="color: #333; margin-bottom: 15px;">{{ survey.title }}</h6>
+                            <ul style="list-style: none; padding: 0;">
+                                {% for option in survey.options %}
+                                <li style="margin-bottom: 10px;">
+                                    <a href="#" 
+                                       style="
+                                           display: inline-block;
+                                           padding: 10px 20px;
+                                           border-radius: 25px;
+                                           background-color: #26a69a;
+                                           color: white;
+                                           text-decoration: none;
+                                           font-size: 16px;">
+                                        {{ option.visible_text }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monitor Results Section -->
+            <div class="col s12 m8 offset-m2">
+                <div class="card">
+                    <div class="card-content" style="text-align: center;">
+                        <h5 style="margin-bottom: 20px;">Monitor Your Results</h5>
+                        <a href="{{ monitor_link }}" class="btn teal btn-large" style="border-radius: 25px; padding: 10px 40px;">
+                            Monitor Responses
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Copy survey link to clipboard
+        document.getElementById('copy-btn').addEventListener('click', function() {
+            const surveyLink = document.getElementById('survey-link');
+            surveyLink.select();
+            surveyLink.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand('copy');
+
+            // Provide feedback to the user
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = 'Copy';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
