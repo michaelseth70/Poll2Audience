@@ -39,8 +39,7 @@
             text-align: center;
             margin-top: 20px;
         }
-        .action-buttons a,
-        .action-buttons button {
+        .action-buttons a {
             margin: 10px;
             padding: 12px 25px;
             font-size: 16px;
@@ -48,6 +47,12 @@
             text-decoration: none;
             display: inline-block;
             transition: background-color 0.3s ease;
+            position: relative;
+        }
+        .action-buttons a .icon {
+            font-size: 14px;
+            margin-left: 8px;
+            vertical-align: middle;
         }
         .action-buttons a.preview-btn {
             background-color: #26a69a;
@@ -112,8 +117,12 @@
 
                     <!-- Action Buttons -->
                     <div class="action-buttons">
-                        <a href="{{ survey_link }}" target="_blank" class="preview-btn">Preview Survey</a>
-                        <a href="{{ monitor_link }}" class="monitor-btn">Monitor Responses</a>
+                        <a href="{{ survey_link }}" target="_blank" class="preview-btn">
+                            Preview Survey <i class="material-icons icon">open_in_new</i>
+                        </a>
+                        <a href="{{ monitor_link }}" target="_blank" class="monitor-btn">
+                            Monitor Responses <i class="material-icons icon">open_in_new</i>
+                        </a>
                     </div>
 
                     <!-- Survey Link Section -->
@@ -131,6 +140,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Materialize Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <script>
         // Copy survey link to clipboard
