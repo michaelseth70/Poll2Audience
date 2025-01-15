@@ -10,36 +10,9 @@
             background-color: #f4f4f9;
             font-family: 'Roboto', sans-serif;
         }
-        .copy-btn {
-            background-color: #26a69a;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        .copy-btn:hover {
-            background-color: #1e8e84;
-        }
-        .survey-link-container {
-            display: flex;
-            align-items: center;
-            margin-top: 20px;
-        }
-        .survey-preview {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        a:hover {
-            background-color: #1e8e84;
-        }
         .btn {
             border-radius: 25px;
-            padding: 10px 20px;
+            padding: 8px 16px;
             transition: background-color 0.3s ease;
         }
         .btn.teal {
@@ -47,6 +20,22 @@
         }
         .btn.teal:hover {
             background-color: #1e8e84;
+        }
+        .link-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .link-container input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .link-container .btn {
+            margin-left: 5px;
         }
     </style>
 </head>
@@ -58,49 +47,20 @@
                 <div class="card teal lighten-5" style="margin-top: 30px; padding: 20px;">
                     <h4 class="card-title" style="text-align: center;">Your Survey is Ready!</h4>
                     <p style="font-size: 16px; color: #555; text-align: center;">
-                        Share your survey or monitor its progress.
+                        Share your survey link and monitor responses effortlessly.
                     </p>
                 </div>
             </div>
 
-            <!-- Survey Preview Section -->
+            <!-- Survey Link Section -->
             <div class="col s12 m8 offset-m2">
                 <div class="card">
                     <div class="card-content">
-                        <h5 style="margin-bottom: 20px; text-align: center;">Survey Preview</h5>
-                        <div class="survey-preview">
-                            <h6 style="color: #333; margin-bottom: 15px;">{{ survey.title }}</h6>
-                            <ul style="list-style: none; padding: 0; margin: 0;">
-                                {% for option in survey.options %}
-                                <li style="margin-bottom: 10px;">
-                                    <a href="#" 
-                                       style="
-                                           display: inline-block;
-                                           padding: 10px 20px;
-                                           border-radius: 25px;
-                                           background-color: #26a69a;
-                                           color: white;
-                                           text-decoration: none;
-                                           font-size: 16px;">
-                                        {{ option.visible_text }}
-                                    </a>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Share Survey Link Section -->
-            <div class="col s12 m8 offset-m2">
-                <div class="card">
-                    <div class="card-content">
-                        <h5 style="margin-bottom: 20px; text-align: center;">Share Your Survey</h5>
-                        <div class="survey-link-container">
-                            <input type="text" id="survey-link" value="{{ survey_link }}" readonly 
-                                   style="flex: 1; padding: 10px; font-size: 16px; border: 1px solid #ddd; border-radius: 5px;">
-                            <button id="copy-btn" class="copy-btn">Copy</button>
+                        <h5 style="margin-bottom: 20px; text-align: center;">Survey Link</h5>
+                        <div class="link-container">
+                            <input type="text" id="survey-link" value="{{ survey_link }}" readonly>
+                            <button id="copy-survey-btn" class="btn teal">Copy</button>
+                            <a href="{{ survey_link }}" target="_blank" class="btn teal">Preview</a>
                         </div>
                     </div>
                 </div>
@@ -109,9 +69,13 @@
             <!-- Monitor Results Section -->
             <div class="col s12 m8 offset-m2">
                 <div class="card">
-                    <div class="card-content" style="text-align: center;">
-                        <h5 style="margin-bottom: 20px;">Monitor Your Results</h5>
-                        <a href="{{ monitor_link }}" class="btn teal btn-large">Monitor Responses</a>
+                    <div class="card-content">
+                        <h5 style="margin-bottom: 20px; text-align: center;">Monitor Responses</h5>
+                        <div class="link-container">
+                            <input type="text" id="monitor-link" value="{{ monitor_link }}" readonly>
+                            <button id="copy-monitor-btn" class="btn teal">Copy</button>
+                            <a href="{{ monitor_link }}" target="_blank" class="btn teal">Preview</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -120,13 +84,23 @@
 
     <script>
         // Copy survey link to clipboard
-        document.getElementById('copy-btn').addEventListener('click', function() {
+        document.getElementById('copy-survey-btn').addEventListener('click', function () {
             const surveyLink = document.getElementById('survey-link');
             surveyLink.select();
             surveyLink.setSelectionRange(0, 99999); // For mobile devices
             document.execCommand('copy');
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = 'Copy';
+            }, 2000);
+        });
 
-            // Provide feedback to the user
+        // Copy monitor link to clipboard
+        document.getElementById('copy-monitor-btn').addEventListener('click', function () {
+            const monitorLink = document.getElementById('monitor-link');
+            monitorLink.select();
+            monitorLink.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand('copy');
             this.textContent = 'Copied!';
             setTimeout(() => {
                 this.textContent = 'Copy';
