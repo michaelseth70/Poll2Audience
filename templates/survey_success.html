@@ -5,21 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Survey Created</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         body {
             background-color: #f4f4f9;
             font-family: 'Roboto', sans-serif;
-        }
-        .btn {
-            border-radius: 25px;
-            padding: 8px 16px;
-            transition: background-color 0.3s ease;
-        }
-        .btn.teal {
-            background-color: #26a69a;
-        }
-        .btn.teal:hover {
-            background-color: #1e8e84;
         }
         .link-container {
             display: flex;
@@ -34,8 +24,26 @@
             border-radius: 5px;
             margin-right: 10px;
         }
-        .link-container .btn {
-            margin-left: 5px;
+        .icon-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+        .icon-btn:hover {
+            background-color: #e0f2f1;
+        }
+        .icon-btn i {
+            font-size: 24px;
+            color: #26a69a;
+        }
+        .icon-btn:hover i {
+            color: #1e8e84;
         }
     </style>
 </head>
@@ -47,7 +55,7 @@
                 <div class="card teal lighten-5" style="margin-top: 30px; padding: 20px;">
                     <h4 class="card-title" style="text-align: center;">Your Survey is Ready!</h4>
                     <p style="font-size: 16px; color: #555; text-align: center;">
-                        Share your survey link and monitor responses effortlessly.
+                        Share your survey or monitor responses effortlessly.
                     </p>
                 </div>
             </div>
@@ -59,8 +67,12 @@
                         <h5 style="margin-bottom: 20px; text-align: center;">Survey Link</h5>
                         <div class="link-container">
                             <input type="text" id="survey-link" value="{{ survey_link }}" readonly>
-                            <button id="copy-survey-btn" class="btn teal">Copy</button>
-                            <a href="{{ survey_link }}" target="_blank" class="btn teal">Preview</a>
+                            <button id="copy-survey-btn" class="icon-btn" title="Copy Link">
+                                <i class="material-icons">content_copy</i>
+                            </button>
+                            <a href="{{ survey_link }}" target="_blank" class="icon-btn" title="Preview Survey">
+                                <i class="material-icons">visibility</i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -73,8 +85,12 @@
                         <h5 style="margin-bottom: 20px; text-align: center;">Monitor Responses</h5>
                         <div class="link-container">
                             <input type="text" id="monitor-link" value="{{ monitor_link }}" readonly>
-                            <button id="copy-monitor-btn" class="btn teal">Copy</button>
-                            <a href="{{ monitor_link }}" target="_blank" class="btn teal">Preview</a>
+                            <button id="copy-monitor-btn" class="icon-btn" title="Copy Link">
+                                <i class="material-icons">content_copy</i>
+                            </button>
+                            <a href="{{ monitor_link }}" target="_blank" class="icon-btn" title="Preview Responses">
+                                <i class="material-icons">visibility</i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -89,10 +105,7 @@
             surveyLink.select();
             surveyLink.setSelectionRange(0, 99999); // For mobile devices
             document.execCommand('copy');
-            this.textContent = 'Copied!';
-            setTimeout(() => {
-                this.textContent = 'Copy';
-            }, 2000);
+            M.toast({ html: 'Survey link copied!' });
         });
 
         // Copy monitor link to clipboard
@@ -101,10 +114,7 @@
             monitorLink.select();
             monitorLink.setSelectionRange(0, 99999); // For mobile devices
             document.execCommand('copy');
-            this.textContent = 'Copied!';
-            setTimeout(() => {
-                this.textContent = 'Copy';
-            }, 2000);
+            M.toast({ html: 'Monitor link copied!' });
         });
     </script>
 </body>
