@@ -50,7 +50,8 @@
             color: white;
             border-radius: 25px;
             padding: 10px 20px;
-            margin: 10px 5px;
+            margin: 10px auto;
+            display: block;
             transition: background-color 0.3s ease;
         }
         .btn-green:hover {
@@ -83,15 +84,22 @@
                     <p style="font-size: 16px; color: #555; text-align: center;">
                         Share your survey link and monitor responses effortlessly.
                     </p>
+
+                    <!-- Survey Link Section -->
                     <h5>Survey Link</h5>
                     <div class="link-container">
                         <input type="text" id="survey-link" value="{{ survey_link }}" readonly>
                         <button id="copy-survey-btn">Copy</button>
                     </div>
-                    <div style="text-align: center; margin-top: 20px;">
-                        <a href="{{ survey_link }}" target="_blank" class="btn btn-green">Preview</a>
-                        <a href="{{ monitor_link }}" class="btn btn-green">Monitor</a>
+                    <a href="{{ survey_link }}" target="_blank" class="btn btn-green">Preview Survey</a>
+
+                    <!-- Monitoring Link Section -->
+                    <h5>Monitoring Link</h5>
+                    <div class="link-container">
+                        <input type="text" id="monitor-link" value="{{ monitor_link }}" readonly>
+                        <button id="copy-monitor-btn">Copy</button>
                     </div>
+                    <a href="{{ monitor_link }}" class="btn btn-green">Monitor Responses</a>
                 </div>
             </div>
         </div>
@@ -103,6 +111,18 @@
             const surveyLink = document.getElementById('survey-link');
             surveyLink.select();
             surveyLink.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand('copy');
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = 'Copy';
+            }, 2000);
+        });
+
+        // Copy monitor link to clipboard
+        document.getElementById('copy-monitor-btn').addEventListener('click', function () {
+            const monitorLink = document.getElementById('monitor-link');
+            monitorLink.select();
+            monitorLink.setSelectionRange(0, 99999); // For mobile devices
             document.execCommand('copy');
             this.textContent = 'Copied!';
             setTimeout(() => {
