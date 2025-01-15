@@ -1,121 +1,120 @@
-{% extends "base.html" %}
+import os
+import uuid
+from flask import Flask, request, render_template, redirect, url_for, flash, jsonify
+from flask_sqlalchemy import SQLAlchemy
 
-{% block content %}
-<div class="row">
-    <!-- Survey Title and Description Section -->
-    <div class="col s12 m8 offset-m2">
-        <div class="card teal lighten-5" style="margin-bottom: 30px; padding: 20px;">
-            <h4 class="card-title" style="margin-bottom: 10px; text-align: center;">{{ survey.title }}</h4>
-            <p style="font-size: 16px; color: #555; text-align: center;">
-                {{ survey.description if survey.description else "Here's a quick poll for you. Please choose one of the options below." }}
-            </p>
-        </div>
-    </div>
+app = Flask(__name__)
 
-    <!-- Survey Options Section -->
-    <div class="col s12 m8 offset-m2">
-        <div class="card">
-            <div class="card-content">
-                <h5 style="margin-bottom: 20px; text-align: center;">Make Your Choice</h5>
-                <div id="choices-container">
-                    {% for option in survey.options %}
-                    <button class="choice-button" data-option-id="{{ option.id }}">
-                        <span>{{ option.visible_text }}</span>
-                        <span class="choice-count" id="count-{{ option.id }}">{{ option.response_count }}</span>
-                    </button>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+# Database Configuration
+app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///my_audience_pulse.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const choiceButtons = document.querySelectorAll('.choice-button');
+db = SQLAlchemy(app)
 
-        choiceButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const optionId = button.getAttribute('data-option-id');
+# ============================
+# Models
+# ============================
+class Survey(db.Model):
+    id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    title = db.Column(db.String, nullable=False)
+    options = db.relationship('Option', backref='survey', lazy=True)
 
-                fetch(`/respond/{{ survey.id }}/${optionId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        return response.json().then(err => { throw err });
-                    }
-                })
-                .then(data => {
-                    // Update the vote count in real-time
-                    document.querySelectorAll('.choice-button').forEach(btn => {
-                        const countElement = btn.querySelector('.choice-count');
-                        countElement.textContent = btn.getAttribute('data-option-id') == optionId
-                            ? data.new_count
-                            : countElement.textContent;
-                    });
-                })
-                .catch(error => {
-                    if (error.error === 'already_voted') {
-                        alert("You have already voted.");
-                    } else {
-                        console.error('Error:', error);
-                        alert("An error occurred while submitting your vote.");
-                    }
-                });
-            });
-        });
-    });
-</script>
+class Option(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    survey_id = db.Column(db.String, db.ForeignKey('survey.id'), nullable=False)
+    visible_text = db.Column(db.String, nullable=False)
+    hyperlink = db.Column(db.String, nullable=False)
+    response_count = db.Column(db.Integer, default=0)
 
-<style>
-    body {
-        background-color: #f4f4f9;
-        font-family: 'Roboto', sans-serif;
-        color: #333;
-    }
-    .card {
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        border: 1px solid #ddd;
-    }
-    .card-title {
-        font-size: 24px;
-        font-weight: 600;
-        margin-bottom: 20px;
-        text-align: center;
-        color: #00796b;
-    }
-    .choice-button {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: #26a69a;
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        margin-bottom: 10px;
-        border-radius: 25px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        width: 100%;
-    }
-    .choice-button:hover {
-        background-color: #1e8e84;
-    }
-    .choice-count {
-        background-color: #00796b;
-        padding: 5px 10px;
-        border-radius: 12px;
-        font-size: 14px;
-    }
-</style>
-{% endblock %}
+class OptionSuggestion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(255), unique=True, nullable=False)
+
+# ============================
+# Routes
+# ============================
+@app.route('/')
+def home():
+    return redirect(url_for('create_survey'))
+
+@app.route('/create', methods=['GET', 'POST'])
+def create_survey():
+    suggestions = OptionSuggestion.query.with_entities(OptionSuggestion.text).all()
+
+    if request.method == 'POST':
+        title = request.form.get('title')
+        custom_options = request.form.getlist('option_text')
+
+        if not title:
+            flash("Survey question is required.", "danger")
+            return redirect(url_for('create_survey'))
+
+        options = [opt.strip() for opt in custom_options if opt.strip()]
+        if len(options) < 2:
+            flash("You must define at least two options for your pulse.", "danger")
+            return redirect(url_for('create_survey'))
+
+        survey = Survey(title=title)
+        db.session.add(survey)
+        db.session.flush()
+
+        for text in options:
+            option = Option(survey_id=survey.id, visible_text=text, hyperlink="")
+            db.session.add(option)
+            db.session.flush()
+
+            option.hyperlink = url_for('respond', survey_id=survey.id, option_id=option.id, _external=True)
+            db.session.commit()
+
+            if not OptionSuggestion.query.filter_by(text=text).first():
+                db.session.add(OptionSuggestion(text=text))
+
+        db.session.commit()
+
+        # Redirect directly to the survey view page
+        return redirect(url_for('view_survey', survey_id=survey.id))
+
+    return render_template('create_survey.html', autocomplete_suggestions=[s[0] for s in suggestions])
+
+@app.route('/survey/<survey_id>', methods=['GET'])
+def view_survey(survey_id):
+    survey = Survey.query.get_or_404(survey_id)
+    return render_template('view_survey.html', survey=survey)
+
+@app.route('/respond/<survey_id>/<int:option_id>', methods=['POST'])
+def respond(survey_id, option_id):
+    if 'voted' not in session:
+        session['voted'] = {}
+
+    # Check if the user has already voted for this survey
+    previous_vote = session['voted'].get(survey_id)
+    if previous_vote:
+        if previous_vote == option_id:
+            return jsonify({"error": "already_voted"}), 400
+
+        # Transfer the vote
+        previous_option = Option.query.filter_by(id=previous_vote, survey_id=survey_id).first()
+        if previous_option:
+            previous_option.response_count -= 1
+            db.session.commit()
+
+    # Register the new vote
+    option = Option.query.filter_by(id=option_id, survey_id=survey_id).first()
+    if not option:
+        return jsonify({"error": "Invalid option"}), 404
+
+    option.response_count += 1
+    session['voted'][survey_id] = option_id
+    db.session.commit()
+
+    return jsonify({"new_count": option.response_count}), 200
+
+# ============================
+# Initialize Database
+# ============================
+with app.app_context():
+    db.create_all()
+
+if __name__ == '__main__':
+    app.run(debug=True)
