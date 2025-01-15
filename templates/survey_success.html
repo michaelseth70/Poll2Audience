@@ -10,14 +10,6 @@
             background-color: #f4f4f9;
             font-family: 'Roboto', sans-serif;
         }
-        .navbar {
-            background-color: #26a69a;
-        }
-        .navbar .brand-logo {
-            font-size: 24px;
-            font-weight: bold;
-            padding-left: 15px;
-        }
         .link-container {
             margin-top: 20px;
             text-align: center;
@@ -32,30 +24,35 @@
             width: 80%;
             max-width: 600px;
         }
-        .btn.green {
+        .btn.teal {
+            background-color: #26a69a;
+            color: white;
             border-radius: 25px;
             padding: 10px 20px;
             margin: 10px 5px;
+            display: inline-block;
+            text-align: center;
+            line-height: 1.5;
             transition: background-color 0.3s ease;
         }
-        .btn.green:hover {
+        .btn.teal:hover {
             background-color: #1e8e84;
-        }
-        h5 {
-            margin-bottom: 20px;
-            text-align: center;
         }
         .card {
             margin-top: 30px;
             padding: 20px;
+        }
+        h5 {
+            margin-bottom: 20px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <!-- Header Bar -->
     <nav class="navbar">
-        <div class="nav-wrapper">
-            <a href="#" class="brand-logo">Poll2Audience</a>
+        <div class="nav-wrapper teal">
+            <a href="#" class="brand-logo" style="padding-left: 15px;">Poll2Audience</a>
         </div>
     </nav>
 
@@ -72,13 +69,10 @@
                     <div class="link-container">
                         <input type="text" id="survey-link" value="{{ survey_link }}" readonly>
                         <div>
-                            <button id="copy-survey-btn" class="btn green">Copy Link</button>
-                            <a href="{{ survey_link }}" target="_blank" class="btn green">Preview Survey</a>
+                            <button id="copy-survey-btn" class="btn teal">Copy Link</button>
+                            <a href="{{ survey_link }}" target="_blank" class="btn teal">Preview Survey</a>
+                            <a href="{{ monitor_link }}" class="btn teal">Monitor Responses</a>
                         </div>
-                    </div>
-                    <h5 style="margin-top: 30px;">Monitor Responses</h5>
-                    <div class="link-container">
-                        <a href="{{ monitor_link }}" class="btn teal btn-large">Monitor Responses</a>
                     </div>
                 </div>
             </div>
