@@ -2,14 +2,18 @@
 
 {% block content %}
 <div class="row">
-    <!-- Survey Title and Description Section -->
+    <!-- Welcome Message Section -->
     <div class="col s12 m8 offset-m2">
-        <div class="card teal lighten-5" style="margin-bottom: 30px; padding: 20px;">
-            <h4 class="card-title" style="margin-bottom: 10px; text-align: center;">{{ survey.title }}</h4>
+        <div class="card teal lighten-5" style="margin-bottom: 30px; padding: 20px; border: 1px solid #ddd;">
             <p style="font-size: 16px; color: #555; text-align: center;">
                 {{ survey.description if survey.description else "Here's a quick poll for you. Please choose one of the options below." }}
             </p>
         </div>
+    </div>
+
+    <!-- Survey Title Section -->
+    <div class="col s12 m8 offset-m2">
+        <h4 class="card-title" style="margin-bottom: 20px; text-align: center; color: #00796b;">{{ survey.title }}</h4>
     </div>
 
     <!-- Survey Options Section -->
