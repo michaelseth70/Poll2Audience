@@ -73,10 +73,18 @@ def create_survey():
                 db.session.add(OptionSuggestion(text=text))
 
         db.session.commit()
-        flash("Survey created successfully!", "success")
-        return redirect(url_for('view_survey', survey_id=survey.id))
+
+        # Redirect to the survey success page
+        return redirect(url_for('survey_success', survey_id=survey.id))
 
     return render_template('create_survey.html', autocomplete_suggestions=[s[0] for s in suggestions])
+
+@app.route('/survey/success/<survey_id>', methods=['GET'])
+def survey_success(survey_id):
+    survey = Survey.query.get_or_404(survey_id)
+    survey_link = url_for('view_survey', survey_id=survey.id, _external=True)
+    monitor_link = url_for('monitor_responses', survey_id=survey.id, _external=True)
+    return render_template('survey_success.html', survey=survey, survey_link=survey_link, monitor_link=monitor_link)
 
 @app.route('/survey/<survey_id>', methods=['GET'])
 def view_survey(survey_id):
