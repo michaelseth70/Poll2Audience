@@ -5,54 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ survey.title }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <style>
-        body {
-            background-color: #f4f4f9;
-            font-family: 'Roboto', sans-serif;
-            color: #333;
-        }
-        .container {
-            margin-top: 50px;
-        }
-        .card {
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            border: 1px solid #ddd;
-        }
-        .card-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #00796b;
-        }
-        .choice-button {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #26a69a;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            margin-bottom: 10px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-        }
-        .choice-button:hover {
-            background-color: #1e8e84;
-        }
-        .choice-count {
-            background-color: #00796b;
-            padding: 5px 10px;
-            border-radius: 12px;
-            font-size: 14px;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -60,9 +12,8 @@
             <h4 class="card-title">{{ survey.title }}</h4>
             <div id="choices-container">
                 {% for option in survey.options %}
-                <button class="choice-button" data-option-id="{{ option.id }}">
-                    <span>{{ option.visible_text }}</span>
-                    <span class="choice-count" id="count-{{ option.id }}">{{ option.response_count }}</span>
+                <button class="btn teal choice-button" data-option-id="{{ option.id }}">
+                    {{ option.visible_text }} <span class="badge white-text">{{ option.response_count }}</span>
                 </button>
                 {% endfor %}
             </div>
@@ -87,16 +38,14 @@
                         if (response.ok) {
                             return response.json();
                         } else {
-                            throw new Error('Failed to submit the vote.');
+                            return response.json().then(err => { throw err });
                         }
                     })
                     .then(data => {
-                        // Update the vote count in real time
-                        const countElement = document.getElementById(`count-${optionId}`);
-                        countElement.textContent = data.new_count;
+                        button.querySelector('.badge').textContent = data.new_count;
                     })
                     .catch(error => {
-                        console.error('Error:', error);
+                        alert(error.error || 'An error occurred.');
                     });
                 });
             });
