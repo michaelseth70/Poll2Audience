@@ -10,49 +10,69 @@
             background-color: #f4f4f9;
             font-family: 'Roboto', sans-serif;
         }
+        .navbar {
+            background-color: #26a69a;
+        }
+        .navbar .brand-logo {
+            font-size: 24px;
+            font-weight: bold;
+            padding-left: 15px;
+        }
         .link-container {
+            display: flex;
             margin-top: 20px;
-            text-align: center;
+            justify-content: center;
+            align-items: center;
         }
         .link-container input {
-            display: block;
-            margin: 0 auto;
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            width: 80%;
-            max-width: 600px;
+            border-radius: 5px 0 0 5px;
+            width: 70%;
+            max-width: 500px;
+        }
+        .link-container button {
+            border: none;
+            background-color: #26a69a;
+            color: white;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .link-container button:hover {
+            background-color: #1e8e84;
+        }
+        .btn {
+            border-radius: 25px;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            transition: background-color 0.3s ease;
         }
         .btn.teal {
             background-color: #26a69a;
             color: white;
-            border-radius: 25px;
-            padding: 10px 20px;
-            margin: 10px 5px;
-            display: inline-block;
-            text-align: center;
-            line-height: 1.5;
-            transition: background-color 0.3s ease;
         }
         .btn.teal:hover {
             background-color: #1e8e84;
         }
-        .card {
-            margin-top: 30px;
-            padding: 20px;
-        }
         h5 {
             margin-bottom: 20px;
             text-align: center;
+        }
+        .card {
+            margin-top: 30px;
+            padding: 20px;
         }
     </style>
 </head>
 <body>
     <!-- Header Bar -->
     <nav class="navbar">
-        <div class="nav-wrapper teal">
-            <a href="#" class="brand-logo" style="padding-left: 15px;">Poll2Audience</a>
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo">Poll2Audience</a>
         </div>
     </nav>
 
@@ -68,11 +88,11 @@
                     <h5>Survey Link</h5>
                     <div class="link-container">
                         <input type="text" id="survey-link" value="{{ survey_link }}" readonly>
-                        <div>
-                            <button id="copy-survey-btn" class="btn teal">Copy Link</button>
-                            <a href="{{ survey_link }}" target="_blank" class="btn teal">Preview Survey</a>
-                            <a href="{{ monitor_link }}" class="btn teal">Monitor Responses</a>
-                        </div>
+                        <button id="copy-survey-btn">Copy</button>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <a href="{{ survey_link }}" target="_blank" class="btn teal">Preview Survey</a>
+                        <a href="{{ monitor_link }}" class="btn teal">Monitor Responses</a>
                     </div>
                 </div>
             </div>
@@ -88,7 +108,7 @@
             document.execCommand('copy');
             this.textContent = 'Copied!';
             setTimeout(() => {
-                this.textContent = 'Copy Link';
+                this.textContent = 'Copy';
             }, 2000);
         });
     </script>
