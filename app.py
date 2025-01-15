@@ -89,25 +89,26 @@ def view_survey(survey_id):
 
 @app.route('/respond/<survey_id>/<option_id>', methods=['POST'])
 def respond(survey_id, option_id):
+    # Retrieve the survey
     survey = Survey.query.get(survey_id)
     if not survey:
         return jsonify({'error': 'Survey not found'}), 404
 
-    # Initialize the session data for this survey if it doesn't exist
+    # Initialize session data for voting if not already present
     if 'voted_surveys' not in session:
         session['voted_surveys'] = {}
 
-    # Get the previously voted option (if any) for this survey
+    # Get the previously voted option for this survey
     previous_option_id = session['voted_surveys'].get(survey_id)
 
-    # Check if the user already voted for the same option
+    # Check if the user is voting for the same option they already voted for
     if previous_option_id == option_id:
         return jsonify({'error': 'already_voted'}), 400
 
-    # Handle vote transfer if the user switches their choice
+    # Handle switching votes (decrement the count for the previously voted option)
     if previous_option_id:
         previous_option = Option.query.get(previous_option_id)
-        if previous_option:
+        if previous_option and previous_option.survey_id == survey_id:
             previous_option.response_count -= 1
 
     # Register the new vote
@@ -116,10 +117,16 @@ def respond(survey_id, option_id):
         return jsonify({'error': 'Invalid option'}), 400
 
     option.response_count += 1
-    session['voted_surveys'][survey_id] = option_id  # Update the session with the new vote
+
+    # Update the session to reflect the new vote
+    session['voted_surveys'][survey_id] = option_id
+    session.modified = True  # Ensure the session updates persist
+
+    # Save changes to the database
     db.session.commit()
 
     return jsonify({'new_count': option.response_count})
+
 
 # ============================
 # Initialize Database

@@ -48,24 +48,34 @@
                     if (response.ok) {
                         return response.json();
                     } else {
-                        return response.json().then(err => { throw err });
+                        // Handle errors gracefully
+                        return response.json().then(err => {
+                            throw err;
+                        });
                     }
                 })
                 .then(data => {
-                    // Update the vote count in real-time
-                    document.querySelectorAll('.choice-button').forEach(btn => {
-                        const countElement = btn.querySelector('.choice-count');
-                        countElement.textContent = btn.getAttribute('data-option-id') == optionId
-                            ? data.new_count
-                            : countElement.textContent;
-                    });
+                    if (data.new_count !== undefined) {
+                        // Update the specific button's count in real-time
+                        const countElement = button.querySelector('.choice-count');
+                        countElement.textContent = data.new_count;
+
+                        // Update styles to highlight the selected button
+                        choiceButtons.forEach(btn => {
+                            if (btn === button) {
+                                btn.style.backgroundColor = "#1e8e84"; // Highlight selected
+                            } else {
+                                btn.style.backgroundColor = "#26a69a"; // Reset others
+                            }
+                        });
+                    }
                 })
                 .catch(error => {
                     if (error.error === 'already_voted') {
-                        alert("You have already voted.");
+                        alert("You have already voted. Click another option to change your vote.");
                     } else {
                         console.error('Error:', error);
-                        alert("An error occurred while submitting your vote.");
+                        alert("An unexpected error occurred. Please try again.");
                     }
                 });
             });
