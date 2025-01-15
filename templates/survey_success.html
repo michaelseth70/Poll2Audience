@@ -7,99 +7,135 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <style>
         body {
-            background-color: #f4f4f9;
+            background-color: #f9fafb;
             font-family: 'Roboto', sans-serif;
+            color: #333;
         }
         .navbar {
-            background-color: #26a69a;
+            background-color: #4cb050;
         }
         .navbar .brand-logo {
             font-size: 24px;
             font-weight: bold;
             padding-left: 15px;
         }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .link-section {
+            margin: 20px 0;
+        }
+        .link-section h5 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
         .link-container {
             display: flex;
-            margin-top: 20px;
-            justify-content: center;
             align-items: center;
+            margin-top: 10px;
         }
         .link-container input {
-            padding: 10px;
-            font-size: 16px;
+            flex: 1;
+            padding: 12px 15px;
             border: 1px solid #ddd;
             border-radius: 5px 0 0 5px;
-            width: 70%;
-            max-width: 500px;
+            font-size: 16px;
+            color: #555;
         }
         .link-container button {
-            border: none;
-            background-color: #26a69a;
-            color: white;
-            padding: 10px 15px;
+            padding: 12px 20px;
             font-size: 16px;
+            background-color: #4cb050;
+            color: white;
+            border: none;
             border-radius: 0 5px 5px 0;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
         .link-container button:hover {
-            background-color: #1e8e84;
-        }
-        .btn-green {
-            background-color: #4cb050;
-            color: white;
-            border-radius: 25px;
-            padding: 10px 20px;
-            margin: 10px auto;
-            display: block;
-            transition: background-color 0.3s ease;
-        }
-        .btn-green:hover {
             background-color: #3a8a3f;
         }
-        h5 {
-            margin-bottom: 20px;
+        .actions {
             text-align: center;
-        }
-        .card {
             margin-top: 30px;
-            padding: 20px;
+        }
+        .actions a {
+            margin: 10px;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: white;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        .actions .preview-btn {
+            background-color: #4cb050;
+        }
+        .actions .preview-btn:hover {
+            background-color: #3a8a3f;
+        }
+        .actions .monitor-btn {
+            background-color: #1e88e5;
+        }
+        .actions .monitor-btn:hover {
+            background-color: #1565c0;
         }
     </style>
 </head>
 <body>
-    <!-- Header Bar -->
+    <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-wrapper">
             <a href="#" class="brand-logo">Poll2Audience</a>
         </div>
     </nav>
 
+    <!-- Main Container -->
     <div class="container">
         <div class="row">
-            <!-- Survey Success Card -->
             <div class="col s12 m8 offset-m2">
                 <div class="card">
-                    <h4 class="card-title" style="text-align: center;">Your Survey is Ready!</h4>
-                    <p style="font-size: 16px; color: #555; text-align: center;">
-                        Share your survey link and monitor responses effortlessly.
+                    <h4 class="card-title">Your Survey is Ready!</h4>
+                    <p style="text-align: center; font-size: 16px; color: #555;">
+                        Share your survey and monitor responses effortlessly.
                     </p>
 
                     <!-- Survey Link Section -->
-                    <h5>Survey Link</h5>
-                    <div class="link-container">
-                        <input type="text" id="survey-link" value="{{ survey_link }}" readonly>
-                        <button id="copy-survey-btn">Copy</button>
+                    <div class="link-section">
+                        <h5>Survey Link</h5>
+                        <div class="link-container">
+                            <input type="text" id="survey-link" value="{{ survey_link }}" readonly>
+                            <button id="copy-survey-btn">Copy</button>
+                        </div>
                     </div>
-                    <a href="{{ survey_link }}" target="_blank" class="btn btn-green">Preview Survey</a>
 
-                    <!-- Monitoring Link Section -->
-                    <h5>Monitoring Link</h5>
-                    <div class="link-container">
-                        <input type="text" id="monitor-link" value="{{ monitor_link }}" readonly>
-                        <button id="copy-monitor-btn">Copy</button>
+                    <!-- Monitor Link Section -->
+                    <div class="link-section">
+                        <h5>Monitoring Link</h5>
+                        <div class="link-container">
+                            <input type="text" id="monitor-link" value="{{ monitor_link }}" readonly>
+                            <button id="copy-monitor-btn">Copy</button>
+                        </div>
                     </div>
-                    <a href="{{ monitor_link }}" class="btn btn-green">Monitor Responses</a>
+
+                    <!-- Action Buttons -->
+                    <div class="actions">
+                        <a href="{{ survey_link }}" target="_blank" class="preview-btn">Preview</a>
+                        <a href="{{ monitor_link }}" class="monitor-btn">Monitor Responses</a>
+                    </div>
                 </div>
             </div>
         </div>
